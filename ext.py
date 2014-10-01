@@ -56,21 +56,27 @@ def extract_data(out, name, f, parent_invrec):
     magic = f.read(4)
     f.seek(-4, os.SEEK_CUR)
 
-    raw_types = {
-        'NULL': 'null',
-        'RIFF': 'wav',
-    }
-
     if magic in 'PACK':
         extract_archive(out, name, f, parent_invrec)
     elif magic in ('PK\x03\x04',):
         extract_zip(out, name, f, parent_invrec)
-    elif magic in raw_types:
-        name += '.' + raw_types[magic]
-        dump_file(out, name, f, parent_invrec)
     else:
-        print "Unknown magic", repr(magic)
-        assert False
+        if parent_invrec.type == 'zip':
+            # zip files have good names, so just extract the data
+            dump_file(out, name, f, parent_invrec)
+        else:
+            # AFS / PACK files don't have good names, so try to
+            # detect based on the content.
+            raw_types = {
+                'NULL': 'null',
+                'RIFF': 'wav',
+            }
+
+            if magic in raw_types:
+                name += '.' + raw_types[magic]
+            else:
+                print "Unknown magic", repr(magic)
+                assert False
 
 def extract_archive(out, name, f, parent_invrec, check_magic='PACK'):
     magic = f.read(4)
@@ -104,8 +110,9 @@ def extract_zip(out, name, f, parent_invrec):
     assert len(names) == 1
     name = names[0]
 
-    child_f = z.open(name, 'r')
-    dump_file(out, name, child_f, invrec)
+    with z.open(name, 'r') as zip_f:
+        child_f = StringIO(zip_f.read())
+        extract_data(out, name, child_f, invrec)
 
 def dump_file(out, name, f, parent_invrec):
     invrec = Invrec(name, 'data')
