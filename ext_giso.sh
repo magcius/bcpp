@@ -1,8 +1,9 @@
 #!/bin/sh
 . ./files.sh
 
-7z x giso/orig_game.iso -o gass/
+cd gext
+7z x ../giso/orig_game.iso
 
 for i in "${FILES[@]}"; do
-    chmod -x +w gass/$i
+    chmod -x +w $i
 done
