@@ -3,7 +3,9 @@
 
 cd gext
 7z x ../giso/orig_game.iso
+cd ..
 
 for i in "${FILES[@]}"; do
-    chmod -x +w $i
+    cp gext/PSP_GAME/USRDIR/$i gass/$i
+    chmod -x+w gass/$i
 done
