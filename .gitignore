@@ -1,0 +1,10 @@
+*.iso
+*.afs
+*.bak
+gass/*
+gext/*
+giso/*
+gout/*
+ppsspp/
+!.empty_dir
+*~
