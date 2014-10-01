@@ -1,0 +1,4 @@
+
+FILES=(
+    script.afs
+)

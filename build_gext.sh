@@ -1,2 +1,6 @@
 #!/bin/sh
-cp gass/script.afs gext/PSP_GAME/USRDIR/script.afs
+. ./files.sh
+
+for i in "${FILES[@]}"; do
+    cp gass/$i gext/PSP_GAME/USRDIR/$i
+done
